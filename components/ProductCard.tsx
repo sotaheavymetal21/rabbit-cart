@@ -21,7 +21,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             />
           ) : (
             <div className="flex items-center justify-center h-full text-gray-400">
-              No Image
+              画像なし
             </div>
           )}
         </div>
@@ -37,7 +37,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               ¥{product.price.toLocaleString()}
             </span>
             {product.stock === 0 && (
-              <span className="text-sm font-medium text-red-500">Sold Out</span>
+              <span className="text-sm font-medium text-red-500">売り切れ</span>
             )}
           </div>
         </div>

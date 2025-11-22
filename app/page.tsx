@@ -12,7 +12,7 @@ export default async function Home() {
     console.error('Error fetching products:', error)
     return (
       <div className="container mx-auto px-4 py-8 text-center text-red-500">
-        Failed to load products. Please try again later.
+        商品の読み込みに失敗しました。後でもう一度お試しください。
       </div>
     )
   }
@@ -20,7 +20,7 @@ export default async function Home() {
   return (
     <main className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
-        Rabbit Goods 🐰
+        うさぎグッズ一覧 🐰
       </h1>
       
       {products && products.length > 0 ? (
@@ -31,7 +31,7 @@ export default async function Home() {
         </div>
       ) : (
         <div className="text-center text-gray-500 py-12">
-          No products found.
+          商品が見つかりません。
         </div>
       )}
     </main>
