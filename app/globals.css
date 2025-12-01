@@ -1,10 +1,13 @@
+/* Tailwind CSSの本体を読み込みます。これがないとTailwindのクラスが使えません。 */
 @import "tailwindcss";
 
+/* サイト全体で使用する色の変数を定義します（ライトモード用） */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #ffffff; /* 背景色：白 */
+  --foreground: #171717; /* 文字色：黒に近いグレー */
 }
 
+/* CSS変数をTailwindのクラス（bg-backgroundなど）として使えるように紐付けます */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -12,15 +15,17 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* ユーザーの端末がダークモードの場合の設定です */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0a0a0a; /* 背景色：黒に近いグレー */
+    --foreground: #ededed; /* 文字色：白に近いグレー */
   }
 }
 
+/* ページ全体の基本スタイルを設定します */
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--background); /* 定義した背景色変数を適用 */
+  color: var(--foreground);      /* 定義した文字色変数を適用 */
   font-family: Arial, Helvetica, sans-serif;
 }
