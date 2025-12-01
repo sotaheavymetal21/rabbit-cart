@@ -75,7 +75,8 @@ export default function RootLayout({
 }>) {
   return (
     // HTML全体の構造を定義
-    <html lang="ja">  {/* lang="ja": 日本語ページであることを宣言（アクセシビリティ対応） */}
+    // lang="en": 英語ページであることを宣言（アクセシビリティ対応）
+    <html lang="en">
       <body
         // テンプレートリテラル（``）で複数のクラス名を結合
         // - geistSans.variable: --font-geist-sans CSS変数を有効化
