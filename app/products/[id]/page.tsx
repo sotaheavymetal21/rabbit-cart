@@ -10,6 +10,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 // 404ページを表示するための関数
 import { notFound } from 'next/navigation'
+// カート追加ボタンコンポーネント
+import AddToCartButton from '@/components/AddToCartButton'
 
 // ===========================
 // 型定義: TypeScriptの型安全性を確保
@@ -189,42 +191,20 @@ export default async function ProductDetailPage({ params }: PageProps) {
               カートボタンエリア
               - mt-auto: 下部に配置（flexboxの自動マージン）
               =========================== */}
+import AddToCartButton from '@/components/AddToCartButton'
+
+// ... (existing imports)
+
+// ... (inside component)
+
+          {/* ===========================
+              カートボタンエリア
+              - mt-auto: 下部に配置（flexboxの自動マージン）
+              =========================== */}
           <div className="mt-auto">
-            {/* 在庫がある場合: カートに入れるボタン */}
-            {product.stock > 0 ? (
-              <button
-                // ボタンのスタイル
-                // - w-full: 幅を親要素いっぱいに広げる
-                // - bg-pink-500: 背景色をピンク（500番）
-                // - text-white: 文字色を白
-                // - py-3: 上下のパディングを0.75rem（12px）
-                // - px-6: 左右のパディングを1.5rem（24px）
-                // - rounded-lg: 角を丸くする（0.5rem = 8px）
-                // - font-medium: 文字の太さを中くらい（Medium）にする
-                // - hover:bg-pink-600: ホバー時に背景色を少し濃いピンクにする
-                // - transition-colors: 色の変化をアニメーションさせる
-                // - focus:outline-none: フォーカス時のデフォルトの枠線を消す
-                // - focus:ring-2: フォーカス時に2pxのリング（枠線）を表示
-                // - focus:ring-pink-500: リングの色をピンクにする
-                // - focus:ring-offset-2: リングとボタンの間に2pxの隙間を空ける
-                className="w-full bg-pink-500 text-white py-3 px-6 rounded-lg font-medium hover:bg-pink-600 transition-colors focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2"
-                aria-label="カートに入れる"  // アクセシビリティ対応（スクリーンリーダー用）
-              >
-                カートに入れる 🐰
-              </button>
-            ) : (
-              /* 在庫がない場合: 無効化されたボタン
-                 - bg-gray-300: 背景色を薄いグレーにする
-                 - text-gray-500: 文字色をグレーにする
-                 - cursor-not-allowed: マウスカーソルを「禁止」マークにする
-              */
-              <button
-                disabled  // ボタンを無効化
-                className="w-full bg-gray-300 text-gray-500 py-3 px-6 rounded-lg font-medium cursor-not-allowed"
-              >
-                売り切れ
-              </button>
-            )}
+            {/* カートに追加ボタン（Client Component） */}
+            <AddToCartButton product={product} />
+            
             {/* 在庫数の表示 */}
             <p className="mt-2 text-sm text-center text-gray-500">
               在庫: {product.stock}点

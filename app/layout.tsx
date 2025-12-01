@@ -10,6 +10,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 // グローバルCSSファイルを読み込む（Tailwind CSSの設定など）
 import "./globals.css";
+// 共通コンポーネントの読み込み
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 // ===========================
 // フォント設定: Google Fontsの設定
@@ -82,11 +85,16 @@ export default function RootLayout({
         // - geistSans.variable: --font-geist-sans CSS変数を有効化
         // - geistMono.variable: --font-geist-mono CSS変数を有効化
         // - antialiased: フォントのアンチエイリアス（滑らか表示）を有効化
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        // - min-h-screen: 最小高さを画面いっぱいにする
+        // - flex flex-col: 子要素を縦に並べる（Sticky Footer用）
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
-        {/* ここに各ページのコンテンツが挿入される */}
-        {/* 例: app/page.tsx の内容がここに表示される */}
-        {children}
+        <Header />
+        {/* メインコンテンツエリア: 残りの高さを埋める */}
+        <div className="grow">
+          {children}
+        </div>
+        <Footer />
       </body>
     </html>
   );
