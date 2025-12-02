@@ -8,28 +8,30 @@ import (
 )
 
 type Config struct {
-	DBUrl     string
-	JWTSecret string
-	Port      string
+	DBUrl         string
+	RedisURL      string
+	Port          string
+	SessionSecret string
 }
 
 func LoadConfig() *Config {
 	// .env ファイルが存在する場合は読み込む
-	// バイナリが実行される場所によってパスが異なる可能性があるため、
-	// 親ディレクトリの .env も確認する（ローカル開発用）
-
-	// ../.env (backend/ から見た相対パス) を試行
 	if err := godotenv.Load("../.env"); err != nil {
-		// カレントディレクトリを確認
 		if err := godotenv.Load(); err != nil {
 			log.Println(".env ファイルが見つかりませんでした。環境変数を使用します。")
 		}
 	}
 
+	sessionSecret := os.Getenv("SESSION_SECRET")
+	if sessionSecret == "" {
+		log.Fatal("SESSION_SECRET が設定されていません")
+	}
+
 	return &Config{
-		DBUrl:     os.Getenv("DB_URL"),
-		JWTSecret: os.Getenv("SUPABASE_JWT_SECRET"), // 環境変数名は既存のものを利用するが、コード内では汎用的に扱う
-		Port:      getEnv("PORT", "8080"),
+		DBUrl:         os.Getenv("DB_URL"),
+		RedisURL:      os.Getenv("REDIS_URL"),
+		Port:          getEnv("PORT", "8080"),
+		SessionSecret: sessionSecret,
 	}
 }
 
