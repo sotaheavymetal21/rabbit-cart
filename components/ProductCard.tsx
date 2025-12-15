@@ -1,10 +1,10 @@
 import Image from 'next/image'
-import { Product } from '@/types/supabase'
+import { Product } from '@/types/product'
 import Link from 'next/link'
 
 // コンポーネントが受け取るpropsの型定義
 interface ProductCardProps {
-  product: Product // 商品データの型（Supabaseの型定義を使用）
+  product: Product // 商品データの型
 }
 
 // 商品カードを表示するコンポーネント
