@@ -14,6 +14,7 @@ import (
 func SetupRouter(
 	productHandler handler.ProductHandler,
 	authHandler handler.AuthHandler,
+	orderHandler handler.OrderHandler,
 	redisURL string,
 	sessionSecret string,
 	authMiddleware gin.HandlerFunc,
@@ -71,6 +72,15 @@ func SetupRouter(
 		{
 			products.GET("", productHandler.GetProducts)
 			products.GET("/:id", productHandler.GetProduct)
+		}
+
+		// 注文エンドポイント (要認証)
+		orders := v1.Group("/orders")
+		orders.Use(authMiddleware)
+		{
+			orders.GET("", orderHandler.GetOrders)
+			orders.GET("/:id", orderHandler.GetOrder)
+			orders.POST("", orderHandler.CreateOrder)
 		}
 	}
 
