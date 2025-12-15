@@ -1,6 +1,6 @@
 'use client'
 
-import { createClient } from '@/utils/supabase/client'
+import { apiRequest } from '@/lib/api'
 import { useState } from 'react'
 import Link from 'next/link'
 
@@ -13,7 +13,6 @@ export default function SignupPage() {
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
   
-  const supabase = createClient()
 
   // 新規登録処理
   const handleSignup = async (e: React.FormEvent) => {
@@ -34,17 +33,16 @@ export default function SignupPage() {
       return
     }
 
-    // Supabase Authでサインアップ
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    })
-
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-    } else {
-      setSuccess(true) // 成功フラグを立てる
+    // GoバックエンドAPIでサインアップ
+    try {
+      await apiRequest('/auth/register', {
+        method: 'POST',
+        body: { email, password },
+      })
+      setSuccess(true)
+    } catch (err: any) {
+      setError(err.message || '登録に失敗しました')
+    } finally {
       setLoading(false)
     }
   }

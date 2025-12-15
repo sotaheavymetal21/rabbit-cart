@@ -2,82 +2,39 @@
 // インポート: 必要な機能を読み込む
 // ===========================
 
-// Supabaseクライアントを作成する関数（データベース接続用）
-import { createClient } from '@/utils/supabase/server'
-// Next.jsの画像最適化コンポーネント（自動的にWebP変換、遅延読み込みなどを行う）
+import { apiRequest } from '@/lib/api'
+import { Product } from '@/types/product'
 import Image from 'next/image'
-// Next.jsのリンクコンポーネント（ページ遷移を高速化するプリフェッチ機能付き）
 import Link from 'next/link'
-// 404ページを表示するための関数
 import { notFound } from 'next/navigation'
-// カート追加ボタンコンポーネント
 import AddToCartButton from '@/components/AddToCartButton'
 
-// ===========================
-// 型定義: TypeScriptの型安全性を確保
-// ===========================
+// ... (PageProps interface remains same)
 
-/**
- * ページコンポーネントのpropsの型定義
- * Next.js 15以降では、paramsはPromise型になっている
- */
-interface PageProps {
-  params: Promise<{
-    id: string  // URLパラメータから取得する商品ID（例: /products/123 の "123"）
-  }>
-}
-
-// ===========================
-// メインコンポーネント: 商品詳細ページ
-// ===========================
-
-/**
- * 商品詳細ページのコンポーネント
- * 
- * このコンポーネントは「Server Component」として動作します（async関数）
- * - サーバー側でデータを取得してからHTMLを生成
- * - SEOに有利（検索エンジンがコンテンツを読み取れる）
- * - 初回表示が速い
- * 
- * @param params - URLパラメータ（商品ID）を含むPromise
- */
 export default async function ProductDetailPage({ params }: PageProps) {
   // ===========================
-  // データ取得: Supabaseから商品情報を取得
+  // データ取得: バックエンドAPIから商品情報を取得
   // ===========================
   
-  // paramsはPromise型なので、awaitで値を取り出す
   const { id } = await params
   
-  // Supabaseクライアントを作成（データベース接続）
-  const supabase = await createClient()
+  let product: Product | null = null
+  let error: unknown = null
 
-  // データベースから特定の商品を取得
-  // Supabaseからデータを取得し、結果を非同期で待機します。
-  // 取得したデータは `product` 変数に、エラーがあれば `error` 変数に格納されます。
-  //
-  // - `await`: 非同期処理（Promise）の完了を待ちます。ここではSupabaseのデータベースクエリが完了するまで処理を一時停止します。
-  // - `{ data: product, error }`: これは「オブジェクト分割代入（Object Destructuring Assignment）」というJavaScriptの構文です。
-  //   - `data: product`: Supabaseのクエリ結果は通常 `{ data: ..., error: ... }` の形式で返されます。
-  //     ここで、返されたオブジェクトの `data` プロパティを `product` という新しい変数名に割り当てています。
-  //     これにより、`response.data` の代わりに `product` としてデータにアクセスできます。
-  //   - `error`: 返されたオブジェクトの `error` プロパティを、同名の `error` 変数に直接割り当てています。
-  // - `supabase`: これは事前に `createClient()` で作成されたSupabaseクライアントインスタンスです。
-  //   このインスタンスを通じて、データベースへのクエリ（`.from().select().eq().single()`）を実行します。
-  const { data: product, error } = await supabase
-    .from('products')        // 'products'テーブルから
-    .select('*')             // すべてのカラムを選択
-    .eq('id', id)            // idカラムがURLパラメータのidと一致するものを検索
-    .single()                // 1件のみ取得（配列ではなくオブジェクトとして返す）
+  try {
+    product = await apiRequest<Product>(`/products/${id}`)
+  } catch (e) {
+    error = e
+    console.error('Error fetching product:', e)
+  }
 
   // ===========================
   // エラーハンドリング: 商品が見つからない場合
   // ===========================
   
-  // エラーが発生した、または商品が存在しない場合
   if (error || !product) {
-    console.error('Error fetching product:', error)
-    notFound()  // Next.jsの404ページを表示
+    if (!product) console.error('Product not found')
+    notFound()
   }
 
   // ===========================

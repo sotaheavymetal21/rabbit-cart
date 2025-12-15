@@ -1,6 +1,6 @@
 'use client'
 
-import { createClient } from '@/utils/supabase/client'
+import { apiRequest } from '@/lib/api'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -13,7 +13,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   
   const router = useRouter()
-  const supabase = createClient()
+  const router = useRouter()
 
   // ログイン処理
   const handleLogin = async (e: React.FormEvent) => {
@@ -21,19 +21,19 @@ export default function LoginPage() {
     setLoading(true)
     setError(null)
 
-    // Supabase Authでログイン
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    try {
+      await apiRequest('/auth/login', {
+        method: 'POST',
+        body: { email, password },
+      })
 
-    if (error) {
-      setError(error.message) // エラーメッセージを表示
-      setLoading(false)
-    } else {
       // 成功したらトップページへリダイレクト
       router.push('/')
-      router.refresh() // 認証状態を反映させるためにリフレッシュ
+      router.refresh()
+    } catch (err: any) {
+      setError(err.message || 'ログインに失敗しました')
+    } finally {
+      setLoading(false)
     }
   }
 
