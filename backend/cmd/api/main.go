@@ -26,20 +26,23 @@ func main() {
 	// Repository
 	productRepo := repository.NewProductRepository(db)
 	userRepo := repository.NewUserRepository(db)
+	orderRepo := repository.NewOrderRepository(db)
 
 	// UseCase
 	productUseCase := usecase.NewProductUseCase(productRepo)
 	authUseCase := usecase.NewAuthUseCase(userRepo)
+	orderUseCase := usecase.NewOrderUseCase(orderRepo, productRepo)
 
 	// Handler
 	productHandler := handler.NewProductHandler(productUseCase)
 	authHandler := handler.NewAuthHandler(authUseCase)
+	orderHandler := handler.NewOrderHandler(orderUseCase)
 
 	// Middleware
 	authMiddleware := middleware.AuthMiddleware(userRepo)
 
 	// ルーターのセットアップ
-	r := router.SetupRouter(productHandler, authHandler, cfg.RedisURL, cfg.SessionSecret, authMiddleware)
+	r := router.SetupRouter(productHandler, authHandler, orderHandler, cfg.RedisURL, cfg.SessionSecret, authMiddleware)
 
 	log.Printf("サーバーをポート %s で起動しています...", cfg.Port)
 	if err := r.Run(":" + cfg.Port); err != nil {
